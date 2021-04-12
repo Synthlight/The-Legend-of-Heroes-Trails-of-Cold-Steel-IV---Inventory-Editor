@@ -23,6 +23,15 @@ namespace Inventory_Editor.Models {
         public short Id => Global.ReadMem<short>(idAddress);
 
         [UsedImplicitly]
+        public short Value {
+            get => Global.ReadMem<short>(valueAddress);
+            set {
+                Global.WriteMem(valueAddress, value);
+                OnPropertyChanged(nameof(Value));
+            }
+        }
+
+        [UsedImplicitly]
         public string Name {
             get {
                 if (ItemLookup.items.ContainsKey(Id)) return ItemLookup.items[Id];
@@ -32,15 +41,6 @@ namespace Inventory_Editor.Models {
                     0x2ca => "Champion Medallion",
                     _ => "Unknown"
                 };
-            }
-        }
-
-        [UsedImplicitly]
-        public short Value {
-            get => Global.ReadMem<short>(valueAddress);
-            set {
-                Global.WriteMem(valueAddress, value);
-                OnPropertyChanged(nameof(Value));
             }
         }
 
