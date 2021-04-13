@@ -14,7 +14,7 @@ namespace Inventory_Editor.Models {
             Index = index;
 
             idAddress    = address;
-            valueAddress = address.Add(0x2);
+            valueAddress = address + 2;
         }
 
         public int Index { [UsedImplicitly] get; }
@@ -32,17 +32,7 @@ namespace Inventory_Editor.Models {
         }
 
         [UsedImplicitly]
-        public string Name {
-            get {
-                if (ItemLookup.items.ContainsKey(Id)) return ItemLookup.items[Id];
-                return Id switch {
-                    151 => "Special Ops Notebook",
-                    60 => "U Material",
-                    0x2ca => "Champion Medallion",
-                    _ => "Unknown"
-                };
-            }
-        }
+        public string Name => ItemLookup.items.ContainsKey(Id) ? ItemLookup.items[Id] : "Unknown";
 
         public event PropertyChangedEventHandler PropertyChanged;
 

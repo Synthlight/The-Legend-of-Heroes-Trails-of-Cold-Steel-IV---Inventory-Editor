@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Inventory_Editor {
     public static class PInvoke {
-        public const long INVALID_HANDLE_VALUE = -1;
+        private const long INVALID_HANDLE_VALUE = -1;
 
         [Flags]
         private enum SnapshotFlags : uint {
@@ -46,9 +46,9 @@ namespace Inventory_Editor {
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr CreateToolhelp32Snapshot(SnapshotFlags dwFlags, IntPtr th32ProcessID);
 
-        public static IntPtr GetModuleBaseAddress(IntPtr procId, string modName) {
-            var modBaseAddr = IntPtr.Zero;
-            var hSnap       = CreateToolhelp32Snapshot(SnapshotFlags.Module | SnapshotFlags.Module32, procId);
+        public static MODULEENTRY32 GetModuleInfo(IntPtr procId, string modName) {
+            var moduleInfo = default(MODULEENTRY32);
+            var hSnap      = CreateToolhelp32Snapshot(SnapshotFlags.Module | SnapshotFlags.Module32, procId);
 
             if (hSnap.ToInt64() != INVALID_HANDLE_VALUE) {
                 var modEntry = new MODULEENTRY32 {dwSize = (uint) Marshal.SizeOf(typeof(MODULEENTRY32))};
@@ -56,7 +56,7 @@ namespace Inventory_Editor {
                 if (Module32First(hSnap, ref modEntry)) {
                     do {
                         if (modEntry.szModule.Equals(modName)) {
-                            modBaseAddr = modEntry.modBaseAddr;
+                            moduleInfo = modEntry;
                             break;
                         }
                     } while (Module32Next(hSnap, ref modEntry));
@@ -64,7 +64,10 @@ namespace Inventory_Editor {
             }
             CloseHandle(hSnap);
 
-            return modBaseAddr;
+            return moduleInfo;
         }
+
+        [DllImport("kernel32.dll")]
+        public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int dwSize, out IntPtr lpNumberOfBytesRead);
     }
 }

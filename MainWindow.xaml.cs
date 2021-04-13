@@ -28,11 +28,11 @@ namespace Inventory_Editor {
             var process = processes[0];
             Global.processHandle = Imports.OpenProcess(Imports.PROCESS_ALL_ACCESS, false, process.Id);
 
-            var moduleAddress             = PInvoke.GetModuleBaseAddress((IntPtr) process.Id, MODULE_NAME);
-            var getItemCntFunctionStart   = moduleAddress.Add(0x1efcb0);
-            var codeOffsetForBasePtr      = BitConverter.ToUInt32(Global.ReadMem(getItemCntFunctionStart.Add(3), 4)) + 7;
-            var basePtr                   = getItemCntFunctionStart.AddAndReadAsPointer(codeOffsetForBasePtr);
-            var codeOffsetForItemCountAdr = BitConverter.ToUInt32(Global.ReadMem(getItemCntFunctionStart.Add(12), 4));
+            var moduleInfo                = process.GetModule(MODULE_NAME);
+            var getItemFunctionStart      = moduleInfo.FindPattern("4D ?? ?? ?? ?? ?? ?? 90 8B C8 48 C1 E1 05") - 24;
+            var codeOffsetForBasePtr      = BitConverter.ToUInt32(Global.ReadMem(getItemFunctionStart + 3, 4)) + 7;
+            var basePtr                   = getItemFunctionStart.AddAndReadAsPointer(codeOffsetForBasePtr);
+            var codeOffsetForItemCountAdr = BitConverter.ToUInt32(Global.ReadMem(getItemFunctionStart + 12, 4));
             var itemCntAdr                = basePtr.Add(codeOffsetForItemCountAdr);
             var itemCnt                   = Global.ReadMem<int>(itemCntAdr);
             var baseInvPtr                = itemCntAdr.AddAndReadAsPointer(8);

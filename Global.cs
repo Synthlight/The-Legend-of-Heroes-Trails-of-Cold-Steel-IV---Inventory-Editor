@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Inventory_Editor {
     public static class Global {
-        //public static readonly Dictionary<short, string> ID_DUMP;
-
         public static IntPtr processHandle;
-
-        static Global() {
-            //var json = Encoding.UTF8.GetString(Data.ItemData);
-            //ID_DUMP = JsonConvert.DeserializeObject<Dictionary<short, string>>(json);
-        }
 
         public static T GetDataAs<T>(this IEnumerable<byte> bytes) {
             var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
@@ -128,6 +122,10 @@ namespace Inventory_Editor {
 
         public static T[] Subsequence<T>(this IEnumerable<T> arr, int startIndex, int length) {
             return arr.Skip(startIndex).Take(length).ToArray();
+        }
+
+        public static ProcessModule GetModule(this Process process, string moduleName) {
+            return process.Modules.Cast<ProcessModule>().FirstOrDefault(processModule => processModule.ModuleName == moduleName);
         }
     }
 }
