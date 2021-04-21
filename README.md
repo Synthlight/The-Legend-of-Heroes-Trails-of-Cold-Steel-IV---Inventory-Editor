@@ -4,6 +4,8 @@ Inventory Editor
 
 This is a bare-bones inventory editor. You can't add/remove items, **you can only change the quantity**, but it has item names for just about everything.
 
+You can also press Ctrl+D to set any item with a quantity >50 to 80.
+
 ### The game must be running for this to work.
 This is basically a structured view of the inventory as it exists in ram. If the game isn't running, this program will do nothing and immediately terminate.
 
