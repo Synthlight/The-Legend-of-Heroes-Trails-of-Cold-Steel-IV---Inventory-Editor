@@ -12,6 +12,12 @@ The game moves the inventory around in ram as it adds/removes items. Meaning if 
 
 ![](Pics/1.png?raw=true)
 
+Requirements
+---
+
+- Windows.
+- Net Core 3.1 or later.
+
 Credits
 ---
 
